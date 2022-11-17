@@ -1,5 +1,3 @@
-require 'pry'
-
 module MetaError
   def self.snatch(*methods)
     methods.each do |method|

@@ -1,5 +1,4 @@
 require 'rspec'
-require 'pry'
 require_relative './memoizable'
 require_relative './example'
 
