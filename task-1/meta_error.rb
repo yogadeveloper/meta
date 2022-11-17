@@ -7,7 +7,8 @@ module MetaError
         begin
           super(*args)
         rescue => e
-          puts "\n#{e.class} - #{e.message} \nAt: #{self.name}##{method}\nArgs: #{args}\n\n"
+          puts "#{e.class} - #{e.message} \nCulprit: #{self.name}##{method}\nArgs: #{args}\n"
+          e.backtrace.each{|b| puts b }
         end
       end
     end
