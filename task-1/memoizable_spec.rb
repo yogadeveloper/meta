@@ -4,28 +4,23 @@ require_relative './memoizable'
 require_relative './example'
 
 RSpec.shared_examples_for Memoizable do
+  let(:obj) { described_class.new }
+
   before(:each) do
-    @obj = described_class.new
-
-    @method = described_class.define_method(:hello_world) do 
-      rand
-    end
-
-    @args_method = described_class.define_method(:summary) do |*args|
-      args.inject(:+)
-    end
+    @method = described_class.define_method(:hello_world) { rand }
+    @args_method = described_class.define_method(:summary) { |*args| args.inject(:+) }
   end
 
   context 'without memoization' do
     it 'should return different value' do
-      expect(@obj.send(@method)).not_to eq(@obj.send(@method))
+      expect(obj.send(@method)).not_to eq(obj.send(@method))
     end
   end
 
   context 'with memoization' do
     it 'should return memoized value' do
       described_class.memoize(@method)
-      expect(@obj.send(@method)).to eq(@obj.send(@method))
+      expect(obj.send(@method)).to eq(obj.send(@method))
     end
   end
 
@@ -34,8 +29,8 @@ RSpec.shared_examples_for Memoizable do
       name = :@cached_method
       described_class.memoize(@method, { as: name })
 
-      expect(@obj.send(@method)).to eq(@obj.send(@method))
-      expect(@obj.instance_variable_get(name)).to eq(@obj.send(@method))
+      expect(obj.send(@method)).to eq(obj.send(@method))
+      expect(obj.instance_variable_get(name)).to eq(obj.send(@method))
     end
   end
 
@@ -47,23 +42,21 @@ RSpec.shared_examples_for Memoizable do
 
   context 'with args' do
     it 'should memoize args result' do
-      @obj.send(@args_method, 1, 2)
-      expect(@obj.instance_variable_get(:@summary_cached)).to eq nil
+      args = [1, 2]
+
+      obj.send(@args_method, *args)
+      expect(obj.instance_variable_get(:@summary_cached)).to eq nil
 
       described_class.memoize(@args_method)
 
-      args = [1,2]
       key = Marshal.dump(args)
-      @obj.send(@args_method, *args)
+      obj.send(@args_method, *args)
 
-      expect(@obj.instance_variable_get(:@summary_cached)[key]).to eq 3
+      expect(obj.instance_variable_get(:@summary_cached)[key]).to eq 3
     end
   end
 end
 
 RSpec.describe Example do 
-  it_should_behave_like Memoizable do
-    let(:method_with_as_option) { :bar }
-    let(:options) {{ as: :@bar_cached }}
-  end
+  it_should_behave_like Memoizable
 end
