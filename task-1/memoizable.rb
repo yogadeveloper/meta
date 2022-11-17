@@ -14,7 +14,7 @@ module Memoizable
       cache_defined = instance_variable_defined?(var)
 
       if args.any?
-        key = Marshal.dump(args.join(''))
+        key = Marshal.dump(args)
         return cache[key] if cache_defined && cache[key]
 
         cache ||= {}
