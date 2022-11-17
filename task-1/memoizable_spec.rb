@@ -58,15 +58,6 @@ RSpec.shared_examples_for Memoizable do
 
       expect(@obj.instance_variable_get(:@summary_cached)[key]).to eq 3
     end
-
-    it 'should work with all kind of types' do
-      described_class.memoize(@args_method)
-      args = ['hello', 2, nil, 35.5, false, [], {}, :world]
-      key = Marshal.dump(args)
-
-      @obj.send(@args_method, *args)
-      expect(@obj.instance_variable_get(:@summary_cached)[key]).to eq "hello235.5false[]{}world"
-    end
   end
 end
 

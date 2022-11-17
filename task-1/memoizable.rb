@@ -19,8 +19,6 @@ module Memoizable
 
         cache ||= {}
         
-        args.map!(&:to_s) unless args.all?{|i| i.is_a? Numeric } 
-
         cache.merge!({
           key => unbound_method.bind(self).call(*args)
         })
