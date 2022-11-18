@@ -47,11 +47,8 @@ RSpec.shared_examples_for Memoizable do
       expect(obj.instance_variable_get(:@summary_cached)).to eq nil
 
       described_class.memoize(@args_method)
-
-      key = Marshal.dump(args)
       obj.send(@args_method, *args)
-
-      expect(obj.instance_variable_get(:@summary_cached)[key]).to eq 3
+      expect(obj.instance_variable_get(:@summary_cached)[args.hash]).to eq 3
     end
   end
 end

@@ -1,6 +1,6 @@
 require_relative './meta_error'
 
-module Memoizable
+module MemoizableMarshal
   prepend MetaError
 
   MetaError.snatch :memoize
@@ -14,14 +14,17 @@ module Memoizable
       cache_defined = instance_variable_defined?(var)
 
       if args.any?
-        return cache[args.hash] if cache_defined && cache[args.hash]
+        key = Marshal.dump(args)
+        return cache[key] if cache_defined && cache[key]
 
         cache ||= {}
         
-        cache[args.hash] = unbound_method.bind(self).call(*args)
-        instance_variable_set(var, cache)
+        cache.merge!({
+          key => unbound_method.bind(self).call(*args)
+        })
 
-        return cache[args.hash]
+        instance_variable_set(var, cache)
+        return cache[key]
       end
 
       return cache if cache_defined
