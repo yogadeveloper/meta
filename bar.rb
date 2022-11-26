@@ -1,5 +1,4 @@
 require_relative './attributes'
-require 'pry'
 
 State = Attributes.define do
   state do

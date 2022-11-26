@@ -1,5 +1,4 @@
 require 'rspec'
-require 'pry'
 require './attributes'
 require './spec/attributes_helper'
 

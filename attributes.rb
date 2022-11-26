@@ -1,4 +1,3 @@
-require 'pry'
 class Attributes < Module
   autoload :DSL, File.join(__dir__, "attrs", "dsl")
 
