@@ -1,12 +1,14 @@
 require 'rspec'
 require 'pry'
 require './attributes'
+require './spec/attributes_helper'
 
-autoload :IncludeAttrs, File.join(__dir__, "spec", "attributes_helper")
+autoload :IncludeAttrs, File.join(__dir__, "spec/helpers", "include_attrs")
+autoload :IncludeConnectedAttrs, File.join(__dir__, "spec/helpers", "include_connected_attrs")
 
-RSpec.shared_examples_for Attributes do
+RSpec.shared_examples_for Attributes do |include_option|
   context 'init with required argument' do
-    let(:obj) { described_class.include(IncludeAttrs).new(name: "hello world") }
+    let(:obj) { described_class.include(include_option).new(name: "hello world") }
 
     it 'should set required attribute' do 
       expect(obj.name).to eq("hello world")
@@ -49,7 +51,7 @@ RSpec.shared_examples_for Attributes do
   end
 
   context 'init without required argument' do 
-    let(:obj) { described_class.include(IncludeAttrs).new }
+    let(:obj) { described_class.include(include_option).new }
 
     it 'should throw an error' do
       expect { described_class.new }.to raise_error(ArgumentError)
@@ -60,5 +62,6 @@ end
 class ExampleClass; end
 
 RSpec.describe ExampleClass do 
-  it_should_behave_like Attributes
+  it_should_behave_like Attributes, IncludeAttrs
+  it_should_behave_like Attributes, IncludeConnectedAttrs
 end
