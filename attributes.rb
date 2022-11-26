@@ -2,14 +2,14 @@ require 'pry'
 class Attributes < Module
   autoload :DSL, File.join(__dir__, "attrs", "dsl")
 
-  def self.define(&block)
-    proxy = DSL.proxy.new
-    proxy.instance_exec(&block)
-    new(proxy.attrs)
-  end
-
   attr_reader :attrs
-  attr_accessor :object
+  attr_accessor :object, :proxy
+
+  def self.define(&block)
+    @proxy ||= DSL.proxy.new
+    @proxy.instance_exec(&block)
+    new(@proxy.attrs)
+  end
 
   def initialize(attributes)
     @attrs = attributes
